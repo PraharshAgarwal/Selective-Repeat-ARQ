@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Repeat ARQ Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>Selective Repeat ARQ Simulation</h1>
+                <p>Interactive visualization of the Selective Repeat Automatic Repeat Request protocol</p>
+            </div>
+            <div class="header-buttons">
+                <button class="header-btn" id="learnBtn"> Learn</button>
+                <button class="header-btn" id="developedByBtn"> Developed By</button>
+                <button class="header-btn" id="helpBtn"> Help</button>
+                <button class="header-btn" id="downloadBtn">Download</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="control-panel">
+                <label>Number of Frames (N):</label>
+                <input type="number" id="numFrames" min="1" value="8" />
+
+                <label>Window Size (W):</label>
+                <input type="number" id="winSize" min="1" value="4" />
+
+                <label>Frame Delay:</label>
+                <select id="frameDelayMode" class="modeSelect">
+                    <option value="none">None</option>
+                    <option value="random">Random</option>
+                    <option value="user">User Defined</option>
+                    <option value="kth">Every Kth</option>
+                </select>
+                <div id="frameDelayUserDiv" class="hidden small-input">
+                    <label>Frame No. (Delay):</label>
+                    <input type="number" id="frameDelayNo" min="1" />
+                </div>
+                <div id="frameDelayKthDiv" class="hidden small-input">
+                    <label>Every Kth Frame (Delay):</label>
+                    <input type="number" id="frameDelayKth" min="2" value="3" />
+                </div>
+
+                <label>Frame Lost:</label>
+                <select id="frameLostMode" class="modeSelect">
+                    <option value="none">None</option>
+                    <option value="random">Random</option>
+                    <option value="user">User Defined</option>
+                    <option value="kth">Every Kth</option>
+                </select>
+                <div id="frameLostUserDiv" class="hidden small-input">
+                    <label>Frame No. (Lost):</label>
+                    <input type="number" id="frameLostNo" min="1" />
+                </div>
+                <div id="frameLostKthDiv" class="hidden small-input">
+                    <label>Every Kth Frame (Lost):</label>
+                    <input type="number" id="frameLostKth" min="2" value="3" />
+                </div>
+
+                <label>ACK Delay:</label>
+                <select id="ackDelayMode" class="modeSelect">
+                    <option value="none">None</option>
+                    <option value="random">Random</option>
+                    <option value="user">User Defined</option>
+                    <option value="kth">Every Kth</option>
+                </select>
+                <div id="ackDelayUserDiv" class="hidden small-input">
+                    <label>ACK No. (Delay):</label>
+                    <input type="number" id="ackDelayNo" min="1" />
+                </div>
+                <div id="ackDelayKthDiv" class="hidden small-input">
+                    <label>Every Kth ACK (Delay):</label>
+                    <input type="number" id="ackDelayKth" min="2" value="3" />
+                </div>
+
+                <label>ACK Lost:</label>
+                <select id="ackLostMode" class="modeSelect">
+                    <option value="none">None</option>
+                    <option value="random">Random</option>
+                    <option value="user">User Defined</option>
+                    <option value="kth">Every Kth</option>
+                </select>
+                <div id="ackLostUserDiv" class="hidden small-input">
+                    <label>ACK No. (Lost):</label>
+                    <input type="number" id="ackLostNo" min="1" />
+                </div>
+                <div id="ackLostKthDiv" class="hidden small-input">
+                    <label>Every Kth ACK (Lost):</label>
+                    <input type="number" id="ackLostKth" min="2" value="3" />
+                </div>
+                <div class="button-group">
+                    <button id="simulateBtn">Start Simulation</button>
+                    <button id="clearBtn">Reset</button>
+                </div>
+            </aside>
+
+            <main class="simulation-area">
+                <div class="diagram">
+                    <h2>Timeline Diagram</h2>
+                    <div id="canvasWrap">
+                        <canvas id="timelineCanvas" width="1200" height="700"></canvas>
+                    </div>
+                </div>
+
+                <div class="logs-container">
+                    <h3>📋 Transmission Log</h3>
+                    <div id="logs"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="learnModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" data-close="learnModal">×</button>
+            <h2> Learn About Selective Repeat ARQ</h2>
+            <p>Selective Repeat ARQ (Automatic Repeat Request) is a data link layer protocol that allows the sender to
+                have multiple unacknowledged frames in flight. Unlike Go-Back-N, it only retransmits frames that are
+                lost or damaged, making it more efficient for networks with high error rates or long propagation delays.
+            </p>
+            <h3>Key Concepts</h3>
+            <ul>
+                <li><strong>Sliding Window:</strong> A mechanism that allows multiple frames to be in transit.</li>
+                <li><strong>Selective Retransmission:</strong> Only corrupted or lost frames are retransmitted.</li>
+                <li><strong>Receiver Buffer:</strong> The receiver maintains a buffer to store out-of-order frames.</li>
+            </ul>
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/WfIhQ3o2xow"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="developedByModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" data-close="developedByModal">×</button>
+            <h2>👥 Meet the Team</h2>
+            <h3 style="text-align: center; color: #667eea; margin-top: 10px; margin-bottom: 20px;">Project Developers
+            </h3>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="assets/ujjwal.jpg" alt="Ujjwal Shukla">
+                    <h4>Ujjwal Shukla</h4>
+                    <p>Reg No: 24BCE5349</p>
+                    <p>Email: ujjwal.shukla2509@gmail.com</p>
+                    <p>SCOPE</p>
+                </div>
+                <div class="team-member">
+                    <img src="assets/vasu.jpg" alt="Vasu Jindal">
+                    <h4>Vasu Jindal</h4>
+                    <p>Reg No: 24BCE5445</p>
+                    <p>Email: vasu.jindal2024@vitstudent.ac.in</p>
+                    <p>SCOPE</p>
+                </div>
+                <div class="team-member">
+                    <img src="assets/praharsh.jpg" alt="Praharsh Agarwal">
+                    <h4>Praharsh Agarwal</h4>
+                    <p>Reg No: 24BCE1886</p>
+                    <p>Email: praharsh.agarwal2024@vitstudent.ac.in</p>
+                    <p>SCOPE</p>
+                </div>
+            </div>
+            <hr style="margin: 30px auto; width: 80%; border: 0; border-top: 1px solid #eee;">
+            <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Faculty Guide</h3>
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <div class="team-member" style="max-width: 240px;">
+                    <img src="assets/swaminathan.jpg" alt="Dr. A Swaminathan">
+                    <h4>Dr. A Swaminathan</h4>
+                    <p>Professor at VIT Chennai</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h3 style="color: #667eea; margin-bottom: 15px; margin-top: 0;">Project Information</h3>
+                <p><strong>Course:</strong> Computer Networks</p>
+                <p><strong>Institution:</strong> VIT Chennai</p>
+                <p><strong>Year:</strong> 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" data-close="helpModal">×</button>
+            <h2> Help & User Guide</h2>
+            <div class="help-section">
+                <h4><span class="step-number">1</span>Configure Parameters</h4>
+                <p><strong>Number of Frames:</strong> Total frames to transmit (e.g., 8)</p>
+                <p><strong>Window Size:</strong> Sliding window size (e.g., 4).</p>
+                <p><strong>Delay/Loss Modes:</strong> For both Frames and ACKs, choose a mode:</p>
+                <ul>
+                    <li><strong>None:</strong> Perfect transmission.</li>
+                    <li><strong>Random:</strong> A 25% chance of loss/delay for any packet.</li>
+                    <li><strong>User Defined:</strong> Specify one exact frame/ACK number to lose/delay (e.g., 3).</li>
+                    <li><strong>Every Kth:</strong> Lose/delay every Nth packet (e.g., 2, 4, 6...).</li>
+                </ul>
+            </div>
+            <div class="help-section">
+                <h4><span class="step-number">2</span>Run the Simulation</h4>
+                <p>Click <strong>"Start Simulation"</strong>. The simulation will run based on your selected mode.</p>
+            </div>
+            <div class="help-section">
+                <h4><span class="step-number">3</span>Interpret the Diagram & Log</h4>
+                <ul>
+                    <li><strong style="color: #28a745;">Green Line:</strong> Successful Frame transmission.</li>
+                    <li><strong style="color: #007bff;">Blue Line:</strong> Successful ACK.</li>
+                    <li><strong style="color: #dc3545;">Red Line (Solid):</strong> Lost Frame.</li>
+                    <li><strong style="color: #6c757d;">Gray Line (Dashed):</strong> Lost ACK.</li>
+                    <li><strong style="color: #ff6b35;">Orange Line (Dashed):</strong> Retransmitted Frame.</li>
+                    <li><strong style="color: #dc3545;">Red Text:</strong> Timeout event at the sender.</li>
+                </ul>
+                <p>The <strong>Transmission Log</strong> below the diagram shows a step-by-step text record of all
+                    events.</p>
+            </div>
+            <div class="help-section">
+                <h4><span class="step-number">4</span>Reset</h4>
+                <p><strong>Reset:</strong> Clears the diagram and log for a new simulation.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
